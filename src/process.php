@@ -6,6 +6,7 @@ include_once 'ChromePhp.php';
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 ChromePhp::log('Hello console!');
+$referer = $_SERVER['HTTP_REFERER'];
 
 // Load up the application enviroment variables
 $dotenv = Dotenv\Dotenv::create(dirname(__DIR__));
@@ -27,7 +28,7 @@ if (isset($_POST['save'])){
   $_SESSION['message'] = "Record has been saved!";
   $_SESSION['msg_type'] = "success";
 
-  header("location: http://localhost/~Todd/PHP-CRUD/index.php");
+  header("location: $referer");
 };
 
 // When Update button is pressed
@@ -46,7 +47,7 @@ if (isset($_POST['update'])){
   $_SESSION['message'] = "Record has been updated!";
   $_SESSION['msg_type'] = "info";
 
-  header("location: http://localhost/~Todd/PHP-CRUD/index.php");
+  header("location: $referer");
 };
 
 // When Edit button pressed
@@ -67,7 +68,7 @@ if (isset($_POST['edit'])){
     $_SESSION['id'] = $id;
     $_SESSION['updaterecord'] = true;
   }
-  header("location: http://localhost/~Todd/PHP-CRUD/index.php");
+  header("location: $referer");
 };
 
 // When delete button is pressed
@@ -80,6 +81,6 @@ if (isset($_POST['delete'])){
   $_SESSION['message'] = "Record has been deleted!";
   $_SESSION['msg_type'] = "danger";
   
-  header("location: http://localhost/~Todd/PHP-CRUD/index.php");
+  header("location: $referer");
 };
 ?>
