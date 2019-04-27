@@ -1,5 +1,6 @@
 <?php require_once './src/process.php'; ?>
 <?php include_once './src/ChromePhp.php'; ?>
+<?php require_once __DIR__ . '/vendor/autoload.php'; ?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -11,28 +12,25 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
   <body>
-<?php
-//    pre_r($_SESSION);
-
+<?php  // Check to see if there has been a recent CRUD operation and if so put up the alert.
     if (isset($_SESSION['message'])): ?>
 <?php
         $theType = $_SESSION['msg_type'];
 ?>
-
     <div class="alert alert-<?php echo $theType; ?>" role="alert">
-
 <?php
         echo $_SESSION['message'];
-        unset($_SESSION['message']); // Turn off when user refreshes the page
+        unset($_SESSION['message']); // Turn off Alert for when user refreshes the page
 ?>
-
     </div>
 <?php endif; ?>
-
     <div class="container">
 <?php
-        // Get list of lines in database.  Improve by removing login password and put in enviroment variables (on server).
-        $mysqli = new mysqli('localhost','root','foobar1965','crud') or die(mysqli_error($mysqli));
+        $dotenv = Dotenv\Dotenv::create(__DIR__);
+        $dotenv->load();  // Load up App environment variables
+
+        // Open the database and get list of lines in database
+        $mysqli = new mysqli(getenv('HOST'),getenv('USER_NAME'),getenv('PASSWORD'),getenv('DB_NAME')) or die(mysqli_error($mysqli));
         $result = $mysqli->query("SELECT * FROM data") or die($mysqli->error);
 ?>
       <div class='row justify-content-center'>
@@ -46,7 +44,7 @@
                 <th colspan="2">Action</th>
               </tr>
             </thead>
-<?php
+<?php  // Each row from the database will have an Edit and Delete button
             while( $row = $result->fetch_assoc()): ?>
             <tr>
               <td><?php echo $row['name']; ?></td>
@@ -62,7 +60,9 @@
         </form>
       </div>
 <?php
-        // Get session variables (into local variables) and then unset so page refresh will clear the html
+        // Get session variables into local variables. 
+        // The values will be blank defaulting to placeholder values below unless the
+        //   Edit buton was just processed from list above.  
         $name = $_SESSION['name'];
         unset($_SESSION['name']);
         $location = $_SESSION['location'];
@@ -71,7 +71,6 @@
         unset($_SESSION['updaterecord']);
         $id = $_SESSION['id'];
         unset($_SESSION['id']);
-
 ?>
       <div class='row justify-content-center' >
         <form action="./src/process.php" method='POST' >
