@@ -12,6 +12,10 @@ $referer = $_SERVER['HTTP_REFERER'];
 $dotenv = Dotenv\Dotenv::create(dirname(__DIR__));
 $dotenv->load();
 
+ChromePhp::log(getenv('HOST'));
+ChromePhp::log(getenv('USER_NAME'));
+ChromePhp::log(getenv('PASSWORD'));
+
 $mysqli = new mysqli(getenv('HOST'),getenv('USER_NAME'),getenv('PASSWORD'),getenv('DB_NAME')) or die(mysqli_error($mysqli));
 
 ChromePhp::log($_POST);
